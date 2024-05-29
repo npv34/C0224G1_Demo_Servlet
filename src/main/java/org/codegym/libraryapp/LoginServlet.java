@@ -1,33 +1,26 @@
 package org.codegym.libraryapp;
 
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.io.PrintWriter;
 
 public class LoginServlet extends HttpServlet {
     @Override
     public void init(ServletConfig config) throws ServletException {
-        System.out.println("Servlet initialization");
         super.init(config);
     }
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        resp.setContentType("text/html");
-        PrintWriter out = resp.getWriter();
-        out.println("<html><body>");
-        out.println("<h1>Login</h1>");
-        out.println("<form action=\"/login\" method=\"post\">");
-        out.println("Username: <input type=\"text\" name=\"username\"><br>");
-        out.println("Password: <input type=\"text\" name=\"password\"><br>");
-        out.println("<input type=\"submit\" value=\"Login\">");
-        out.println("</form>");
-        out.println("</body></html>");
-        out.close();
+        RequestDispatcher requestDispatcher = req.getRequestDispatcher("login.jsp");
+        // chuyen req, resp xuong loginJSPServlet
+        requestDispatcher.forward(req, resp);
     }
 
     @Override
@@ -40,6 +33,8 @@ public class LoginServlet extends HttpServlet {
             // chuyen huong url: /admin -> tao new request
             resp.sendRedirect("/admin");
         } else {
+            HttpSession session = req.getSession();
+            session.setAttribute("error", "Account not found");
             resp.sendRedirect("/login");
         }
     }
